@@ -6,6 +6,7 @@ import  { HDKey } from "ethereum-cryptography/hdkey";
 import  { getPublicKey } from "ethereum-cryptography/secp256k1";
 import { keccak256 } from "ethereum-cryptography/keccak";
 import  { bytesToHex } from "ethereum-cryptography/utils";
+import AccountInfo from "./accountinfo";
 
 
 const CreateAccount =()=>{
@@ -61,7 +62,9 @@ const CreateAccount =()=>{
     }
     return(
         <div className="w-full  flex justify-center">
+           
             <div className="w-full bg-slate-400 text-blue-200">
+            <AccountInfo userAccount={useraddress}/>
                 <h4>{create?"creating...":""}</h4>
                 <button onClick={()=>{createUserAccount()}}>
                     Create Account
