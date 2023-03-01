@@ -11,26 +11,26 @@ import  { bytesToHex } from "ethereum-cryptography/utils";
 const CreateAccount =()=>{
     const [useraddress,setUserAddress] = useState();
     const [seedPhrase,setMnemonic] = useState();
+    const [create,setCreate] = useState(false);
 
-    const strength = 128;
-    const _generateMnemonic =()=>{
+    function _generateMnemonic(){
+        const strength = 128;
         const mnemonic = generateMnemonic(wordlist,strength);
-        const entropy = mnemonicToEntropy(mnemonic,wordlist);
-        return {mnemonic,entropy}
-        
+        const  entropy = mnemonicToEntropy(mnemonic,wordlist);
+        return {mnemonic,entropy};
+    
     }
-    const __getHdRootKey = (_mnemonic)=>{
+    function _getHdRootKey(_mnemonic){
         return HDKey.fromMasterSeed(_mnemonic);
-
     }
-    const _generatePrivateKey=(_hdRootKey,_accountIndex)=>{
+    
+    function _generatePrivateKey(_hdRootKey,_accountIndex){
         return _hdRootKey.deriveChild(_accountIndex).privateKey;
     }
-    const _getPublicKey =(_privateKey)=>{
+    function _getPublicKey(_privateKey){
         return getPublicKey(_privateKey);
-
     }
-    const _getEthAddress=(_publicKey)=>{
+    function _getEthAddress(_publicKey){
         return keccak256(_publicKey).slice(-20);
     }
     const getUserAccount =(_address)=>{
@@ -39,23 +39,38 @@ const CreateAccount =()=>{
       return account;
 
     }
-    const createUserAccount =async()=>{
-        const {mnemonic,entropy} = generateMnemonic();
+    const createUserAccount =()=>{
+        setCreate(true);
+        
+        
+        const {mnemonic,entropy} = _generateMnemonic();
+        console.log(`Warning! never disclose your seed phrase:\n ${mnemonic}`);
         setMnemonic(mnemonic);
-        const hdRootKey = __getHdRootKey(mnemonic);
-        const userPrivateKey = _generatePrivateKey(hdRootKey);
-        const userPublicKey = _getPublicKey(userPrivateKey);
-        const userAddress = _getEthAddress(userPrivateKey);
-       const account =  getUserAccount(userAddress);
+        const hdRootKey = _getHdRootKey(entropy);
+        const accountOneIndex =0;
+        const accountOnePrivateKey = _generatePrivateKey(hdRootKey,accountOneIndex);
+        const accountOnePublicKey = _getPublicKey(accountOnePrivateKey);
+        const accountOneAddress = _getEthAddress(accountOnePublicKey);
+        const account =  getUserAccount(accountOneAddress);
+       
        setUserAddress(account);
+       console.log(mnemonic)
+       console.log(account)
+       setCreate(false);
+       
     }
     return(
-        <div className="w-full h-8 flex justify-center">
+        <div className="w-full  flex justify-center">
             <div className="w-full bg-slate-400 text-blue-200">
-                <button>
+                <h4>{create?"creating...":""}</h4>
+                <button onClick={()=>{createUserAccount()}}>
                     Create Account
                 </button>
+                <div className="text-green-200">
+                    <h4>{seedPhrase}</h4>
+                </div>
             </div>
+            
 
         </div>
     )
