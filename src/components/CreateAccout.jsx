@@ -6,9 +6,16 @@ import  { HDKey } from "ethereum-cryptography/hdkey";
 import  { getPublicKey } from "ethereum-cryptography/secp256k1";
 import { keccak256 } from "ethereum-cryptography/keccak";
 import  { bytesToHex } from "ethereum-cryptography/utils";
-import { writeFileSync,readFileSync } from "fs";
+
 
 const CreateAccount =()=>{
+    const strength = 128;
+    const _generateMnemonic =()=>{
+        const mnemonic = generateMnemonic(wordlist,strength);
+        const entropy = mnemonicToEntropy(mnemonic,wordlist);
+        return {mnemonic,entropy}
+        
+    }
     return(
         <div className="w-full h-8 flex justify-center">
             <div className="w-full bg-slate-400 text-blue-200">
